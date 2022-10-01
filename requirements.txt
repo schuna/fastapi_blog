@@ -1,0 +1,12 @@
+dependency-injector
+fastapi
+uvicorn
+pyyaml
+sqlalchemy
+requests
+aiofiles
+python-multipart
+pydantic
+passlib
+python-jose
+bcrypt
