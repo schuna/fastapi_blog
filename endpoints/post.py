@@ -8,6 +8,7 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 
 from common.oauth2 import get_current_user
+from common.utils import create_dir
 from container import Container
 from schemas.post import PostBase, PostDisplay
 from schemas.user import UserBase
@@ -77,7 +78,14 @@ def upload_image(image: UploadFile = File(...)):
     rand_string = ''.join(random.choice(letter) for _ in range(6))
     new = f"_{rand_string}."
     filename = new.join(image.filename.rsplit('.', 1))
-    path = os.path.join('images', filename)
-    with open(path, 'w+b') as wf:
-        shutil.copyfileobj(image.file, wf)
-    return {'filename': path}
+    root_path = os.path.join(os.getcwd(), "images")
+
+    path = os.path.join(root_path, filename)
+
+    create_dir(root_path)
+    try:
+        with open(path, 'w+b') as wf:
+            shutil.copyfileobj(image.file, wf)
+        return {'filename': path}
+    except OSError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'Error: {e}')

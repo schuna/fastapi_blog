@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,7 +34,7 @@ def create_app() -> FastAPI:
         allow_headers=['*']
     )
     fast_app.mount('/images',
-                   StaticFiles(directory="images"),
+                   StaticFiles(directory=os.path.join(os.getcwd(), "images")),
                    name="images")
     return fast_app
 
